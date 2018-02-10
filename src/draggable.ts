@@ -26,6 +26,9 @@ function extractHandle(handle: HandleType): HTMLElement {
 }
 
 export const Draggable = {
+    bind(el: HTMLElement, binding: DraggableBindings) {
+        Draggable.update(el, binding);
+    },
 	update(el: HTMLElement, binding: DraggableBindings) {
 		if (binding.value && binding.value.stopDragging) {
 			return;
@@ -94,7 +97,7 @@ export const Draggable = {
 			el.style.position = "absolute";
 		}
 
-		function setState(state) {
+		function setState(state: any) {
 			handler.setAttribute("draggable-state", JSON.stringify(state));
 		}
 
@@ -106,11 +109,12 @@ export const Draggable = {
 		function getState() {
 			return JSON.parse(handler.getAttribute("draggable-state") as string);
 		}
-
+        
 		if (!handler.getAttribute("draggable")) {
-			el.removeEventListener("mousedown", mouseDown);
+			el.removeEventListener("mousedown", (el as any)["listener"]);
 			handler.addEventListener("mousedown", mouseDown);
-			handler.setAttribute("draggable", "true");
+            handler.setAttribute("draggable", "true");
+            (el as any)["listener"] = mouseDown;
 			setState(getInitState());
 			onPositionChanged();
 		}
