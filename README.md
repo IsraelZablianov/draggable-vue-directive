@@ -1,9 +1,9 @@
 <h1 align="center">draggable-vue-directive</h1>
 
-[![GitHub open issues](https://img.shields.io/github/issues/IsraelZablianov/draggable-vue-directive.svg?maxAge=2592000)](https://github.com/IsraelZablianov/draggable-vue-directive/issues?q=is%3Aopen+is%3Aissue)
-[![npm download](https://img.shields.io/npm/dt/draggable-vue-directive.svg?maxAge=2592000)](https://www.npmjs.com/package/draggable-vue-directive)
+[![GitHub open issues](https://img.shields.io/github/issues/IsraelZablianov/draggable-vue-directive.svg)](https://github.com/IsraelZablianov/draggable-vue-directive/issues?q=is%3Aopen+is%3Aissue)
+[![npm download](https://img.shields.io/npm/dt/draggable-vue-directive.svg)](https://www.npmjs.com/package/draggable-vue-directive)
 [![npm download per month](https://img.shields.io/npm/dm/draggable-vue-directive.svg)](https://www.npmjs.com/package/draggable-vue-directive)
-[![npm version](https://img.shields.io/npm/v/draggable-vue-directive.svg?maxAge=2592000)](https://www.npmjs.com/package/draggable-vue-directive)
+[![npm version](https://img.shields.io/npm/v/draggable-vue-directive.svg)](https://www.npmjs.com/package/draggable-vue-directive)
 [![Package Quality](http://npm.packagequality.com/shield/draggable-vue-directive.svg)](http://packagequality.com/#?package=draggable-vue-directive)
 [![vue2](https://img.shields.io/badge/vue-2.x-brightgreen.svg)](https://vuejs.org/)
 [![MIT License](https://img.shields.io/github/license/IsraelZablianov/draggable-vue-directive.svg)](https://github.com/IsraelZablianov/draggable-vue-directive/blob/master/LICENSE)
