@@ -1,0 +1,33 @@
+{
+  "name": "draggable-vue-directive",
+  "version": "1.0.0",
+  "description": "A simple directive to handle drag and drop of any Vue component",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IsraelZablianov/draggable-vue-directive"
+  },
+  "keywords": [
+    "drag-and-drop",
+    "typescript",
+    "library",
+    "drd",
+    "draggable",
+    "drag",
+    "draggable-vue-directive",
+    "vue"
+  ],
+  "author": "Israel Zablianov <123hartk123@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com//IsraelZablianov/draggable-vue-directive/issues"
+  },
+  "homepage": "https://github.com//IsraelZablianov/draggable-vue-directive#readme",
+  "dependencies": {
+    "vue": "^2.5.13"
+  }
+}
