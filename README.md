@@ -11,6 +11,13 @@
 
 Vue directive (Vue.js 2.0) for handling element drag & drop.
 
+
+## Getting Started
+
+```console
+npm install draggable-vue-directive --save
+```
+
 ## Demo
 
 ![demo gif](https://media.giphy.com/media/3o6nUO1lWMkeyH5nfW/giphy.gif)
