@@ -13,5 +13,6 @@ export interface DraggableBindings {
     value: DraggableValue;
 }
 export declare const Draggable: {
+    bind(el: HTMLElement, binding: DraggableBindings): void;
     update(el: HTMLElement, binding: DraggableBindings): void;
 };

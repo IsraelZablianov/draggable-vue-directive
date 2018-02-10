@@ -17,6 +17,9 @@ function extractHandle(handle) {
     }
 }
 exports.Draggable = {
+    bind: function (el, binding) {
+        exports.Draggable.update(el, binding);
+    },
     update: function (el, binding) {
         if (binding.value && binding.value.stopDragging) {
             return;
@@ -88,9 +91,10 @@ exports.Draggable = {
             return JSON.parse(handler.getAttribute("draggable-state"));
         }
         if (!handler.getAttribute("draggable")) {
-            el.removeEventListener("mousedown", mouseDown);
+            el.removeEventListener("mousedown", el["listener"]);
             handler.addEventListener("mousedown", mouseDown);
             handler.setAttribute("draggable", "true");
+            el["listener"] = mouseDown;
             setState(getInitState());
             onPositionChanged();
         }
