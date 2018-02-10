@@ -1,7 +1,4 @@
-import Vue from "vue";
-import { VNodeDirective } from "vue";
-
-export type HandleType = Vue | HTMLElement;
+export type HandleType = any | HTMLElement;
 
 export interface Position {
 	x: number;
@@ -15,16 +12,16 @@ export interface DraggableValue {
 	stopDragging?: boolean;
 }
 
-export interface DraggableBindings extends VNodeDirective {
+export interface DraggableBindings {
 	value: DraggableValue;
 }
 
 function extractHandle(handle: HandleType): HTMLElement {
-	if (handle && (<Vue>handle).$el) {
-		return (<Vue>handle).$el;
+	if (handle && handle.$el) {
+		return handle.$el;
 	}
 	else {
-		return <HTMLElement>handle;
+		return handle as HTMLElement;
 	}
 }
 
@@ -119,5 +116,3 @@ export const Draggable = {
 		}
 	}
 };
-
-Vue.directive("draggable", Draggable);
