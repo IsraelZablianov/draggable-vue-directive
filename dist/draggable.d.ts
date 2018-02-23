@@ -8,6 +8,7 @@ export interface DraggableValue {
     onPositionChange?: (pos: Position) => void;
     resetInitialPos?: boolean;
     stopDragging?: boolean;
+    boundingRect?: ClientRect;
 }
 export interface DraggableBindings {
     value: DraggableValue;

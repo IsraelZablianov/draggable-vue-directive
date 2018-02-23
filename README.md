@@ -69,7 +69,17 @@ npm install draggable-vue-directive --save
   ...
 ```
 
-### draggable value
+### draggable Value 
+The Object passed to the directive is called the directive value.<br>
+For example in `v-draggable="draggableValue"` draggableValue can be an object containing the folowing fields <br>
+
+* [handle](#handle)
+* [onPositionChange](#onpositionchange)
+* [resetInitialPos](#resetinitialpos)
+* [stopDragging](#stopdragging)
+* [boundingRect](#boundingrect)
+
+
 #### handle
 Type: `HtmlElement | Vue`<br>
 Required: `false`<br>
@@ -116,8 +126,23 @@ will be executed with the current position as param.<br>
 
 #### resetInitialPos
 Type: `Boolean`<br>
-Required: `false`
+Required: `false`<br>
+default: `undefined`<br>
+
+Returns to the initial position the element was before mounted.
+
 
 #### stopDragging
 Type: `Boolean`<br>
-Required: `false`
+Required: `false`<br>
+default: `undefined`<br>
+
+Immediately stop dragging.
+
+
+#### boundingRect
+Type: `ClientRect`<br>
+Required: `false`<br>
+default: `undefined`<br>
+
+Constrains dragging to within the bounds of the rectangle.

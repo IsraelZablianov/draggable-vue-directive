@@ -10,6 +10,7 @@ export interface DraggableValue {
 	onPositionChange?: (pos: Position) => void;
 	resetInitialPos?: boolean;
 	stopDragging?: boolean;
+	boundingRect?: ClientRect;
 }
 
 export interface DraggableBindings {
@@ -25,17 +26,41 @@ function extractHandle(handle: HandleType): HTMLElement {
 	}
 }
 
+function isInBoundries(elementRect?: ClientRect, boundingRect?: ClientRect, dx: number = 0, dy: number = 0): boolean {
+	if (boundingRect && elementRect) {
+		const actualMaxTop = elementRect.top + elementRect.height + dy;
+		const maxTop = boundingRect.bottom;
+
+		const actualMinTop = elementRect.top + dy;
+		const minTop = boundingRect.top;
+
+		const actualMaxLeft = elementRect.left + dx;
+		const maxLeft = boundingRect.right - elementRect.width;
+
+		const actualMinLeft = elementRect.left + dx;
+		const minLeft = boundingRect.left;
+
+		if ((actualMaxTop > maxTop && actualMaxTop - dy > maxTop) ||
+			(actualMinTop < minTop && actualMinTop - dy < minTop) ||
+			(actualMaxLeft > maxLeft && actualMaxLeft - dx > maxLeft) ||
+			(actualMinLeft < minLeft && actualMinLeft - dx < minLeft)) {
+			return false;
+		}
+	}
+
+	return true
+}
+
 export const Draggable = {
-    bind(el: HTMLElement, binding: DraggableBindings) {
-        Draggable.update(el, binding);
-    },
+	bind(el: HTMLElement, binding: DraggableBindings) {
+		Draggable.update(el, binding);
+	},
 	update(el: HTMLElement, binding: DraggableBindings) {
 		if (binding.value && binding.value.stopDragging) {
 			return;
 		}
 
 		const handler = (binding.value && binding.value.handle && extractHandle(binding.value.handle)) || el;
-		const safeDistance = 5;
 		init(binding);
 
 		function mouseMove(event: MouseEvent) {
@@ -43,12 +68,15 @@ export const Draggable = {
 			const state = getState();
 			const dx = event.clientX - state.initialMousePos.x;
 			const dy = event.clientY - state.initialMousePos.y;
-			if (el.scrollHeight + event.clientY > window.innerHeight - safeDistance ||
-				event.clientY - safeDistance < 0 ||
-				el.scrollWidth + event.clientX > window.innerWidth - safeDistance ||
-				event.clientX - el.scrollWidth < safeDistance) {
+
+			const boundingRect = binding.value && binding.value.boundingRect;
+			const stopDragging = binding.value && binding.value.stopDragging;
+			var elementRect = el.getBoundingClientRect();
+
+			if (!isInBoundries(elementRect, boundingRect, dx, dy) || stopDragging) {
 				return;
 			}
+
 			state.lastPos = {
 				x: state.startPosition.x + dx,
 				y: state.startPosition.y + dy
@@ -109,12 +137,12 @@ export const Draggable = {
 		function getState() {
 			return JSON.parse(handler.getAttribute("draggable-state") as string);
 		}
-        
+
 		if (!handler.getAttribute("draggable")) {
 			el.removeEventListener("mousedown", (el as any)["listener"]);
 			handler.addEventListener("mousedown", mouseDown);
-            handler.setAttribute("draggable", "true");
-            (el as any)["listener"] = mouseDown;
+			handler.setAttribute("draggable", "true");
+			(el as any)["listener"] = mouseDown;
 			setState(getInitState());
 			onPositionChanged();
 		}

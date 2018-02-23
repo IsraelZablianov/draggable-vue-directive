@@ -16,6 +16,27 @@ function extractHandle(handle) {
         return handle;
     }
 }
+function isInBoundries(elementRect, boundingRect, dx, dy) {
+    if (dx === void 0) { dx = 0; }
+    if (dy === void 0) { dy = 0; }
+    if (boundingRect && elementRect) {
+        var actualMaxTop = elementRect.top + elementRect.height + dy;
+        var maxTop = boundingRect.bottom;
+        var actualMinTop = elementRect.top + dy;
+        var minTop = boundingRect.top;
+        var actualMaxLeft = elementRect.left + dx;
+        var maxLeft = boundingRect.right - elementRect.width;
+        var actualMinLeft = elementRect.left + dx;
+        var minLeft = boundingRect.left;
+        if ((actualMaxTop > maxTop && actualMaxTop - dy > maxTop) ||
+            (actualMinTop < minTop && actualMinTop - dy < minTop) ||
+            (actualMaxLeft > maxLeft && actualMaxLeft - dx > maxLeft) ||
+            (actualMinLeft < minLeft && actualMinLeft - dx < minLeft)) {
+            return false;
+        }
+    }
+    return true;
+}
 exports.Draggable = {
     bind: function (el, binding) {
         exports.Draggable.update(el, binding);
@@ -25,17 +46,16 @@ exports.Draggable = {
             return;
         }
         var handler = (binding.value && binding.value.handle && extractHandle(binding.value.handle)) || el;
-        var safeDistance = 5;
         init(binding);
         function mouseMove(event) {
             event.preventDefault();
             var state = getState();
             var dx = event.clientX - state.initialMousePos.x;
             var dy = event.clientY - state.initialMousePos.y;
-            if (el.scrollHeight + event.clientY > window.innerHeight - safeDistance ||
-                event.clientY - safeDistance < 0 ||
-                el.scrollWidth + event.clientX > window.innerWidth - safeDistance ||
-                event.clientX - el.scrollWidth < safeDistance) {
+            var boundingRect = binding.value && binding.value.boundingRect;
+            var stopDragging = binding.value && binding.value.stopDragging;
+            var elementRect = el.getBoundingClientRect();
+            if (!isInBoundries(elementRect, boundingRect, dx, dy) || stopDragging) {
                 return;
             }
             state.lastPos = {
@@ -100,3 +120,4 @@ exports.Draggable = {
         }
     }
 };
+//# sourceMappingURL=draggable.js.map
