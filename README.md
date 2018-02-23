@@ -9,7 +9,7 @@
 [![MIT License](https://img.shields.io/github/license/IsraelZablianov/draggable-vue-directive.svg)](https://github.com/IsraelZablianov/draggable-vue-directive/blob/master/LICENSE)
 
 
-Vue directive (Vue.js 2.0) for handling element drag & drop.
+Vue directive (Vue.js 2.x) for handling element drag & drop.
 
 
 ## Getting Started
@@ -70,8 +70,8 @@ npm install draggable-vue-directive --save
 ```
 
 ### draggable Value 
-The Object passed to the directive is called the directive value.<br>
-For example in `v-draggable="draggableValue"` draggableValue can be an object containing the folowing fields <br>
+The object passed to the directive is called the directive value.<br>
+For example in `v-draggable="draggableValue"` draggableValue can be an object containing the folowing fields: <br>
 
 * [handle](#handle)
 * [onPositionChange](#onpositionchange)
