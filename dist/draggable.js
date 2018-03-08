@@ -9,12 +9,7 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 function extractHandle(handle) {
-    if (handle && handle.$el) {
-        return handle.$el;
-    }
-    else {
-        return handle;
-    }
+    return handle && handle.$el || handle;
 }
 function isInBoundries(elementRect, boundingRect, dx, dy) {
     if (dx === void 0) { dx = 0; }

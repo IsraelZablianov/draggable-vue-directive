@@ -1,4 +1,5 @@
-export declare type HandleType = any | HTMLElement;
+import Vue from "Vue";
+export declare type HandleType = Vue | HTMLElement;
 export interface Position {
     x: number;
     y: number;
