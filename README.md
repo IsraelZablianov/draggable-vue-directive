@@ -12,7 +12,7 @@
 Vue directive (Vue.js 2.x) for handling element drag & drop.
 
 
-## Getting Started
+## Installation
 
 ```console
 npm install draggable-vue-directive --save
@@ -21,6 +21,8 @@ npm install draggable-vue-directive --save
 ## Demo
 
 ![demo gif](https://media.giphy.com/media/3o6nUO1lWMkeyH5nfW/giphy.gif)
+
+The live demo can be found in https://israelzablianov.github.io/draggable-demo/.
 
 
 ### Typical use:
@@ -106,13 +108,10 @@ will be executed with the current position as param.<br>
         },
         data() {
             return {
-                handleId: "handle-id",
-                draggableValue: { };
+                draggableValue: { 
+                    onPositionChange: this.onPosChanged
+                };
             }
-        },
-        mounted() {
-            this.draggableValue.handle = this.$refs[this.handleId];
-            this.draggableValue.onPositionChange = this.onPosChanged;
         },
         methods: {
             onPosChanged: function(pos) {
