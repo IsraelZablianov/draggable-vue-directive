@@ -1,5 +1,6 @@
-export type HandleType = any | HTMLElement;
+import Vue from "Vue";
 
+export type HandleType = Vue | HTMLElement;
 export interface Position {
 	x: number;
 	y: number;
@@ -18,12 +19,7 @@ export interface DraggableBindings {
 }
 
 function extractHandle(handle: HandleType): HTMLElement {
-	if (handle && handle.$el) {
-		return handle.$el;
-	}
-	else {
-		return handle as HTMLElement;
-	}
+	return handle && (handle as Vue).$el || handle as HTMLElement;
 }
 
 function isInBoundries(elementRect?: ClientRect, boundingRect?: ClientRect, dx: number = 0, dy: number = 0): boolean {
