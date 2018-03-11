@@ -22,7 +22,7 @@ npm install draggable-vue-directive --save
 
 ![demo gif](https://media.giphy.com/media/3o6nUO1lWMkeyH5nfW/giphy.gif)
 
-The live demo can be found in https://israelzablianov.github.io/draggable-demo/.
+The live demo can be found in https://israelzablianov.github.io/draggable-demo
 
 
 ### Typical use:
@@ -62,7 +62,9 @@ The live demo can be found in https://israelzablianov.github.io/draggable-demo/.
         data() {
             return {
                 handleId: "handle-id",
-                draggableValue: { };
+                draggableValue: { 
+                    handle: undefined
+                };
             }
         },
         mounted() {
