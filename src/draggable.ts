@@ -12,6 +12,7 @@ export interface DraggableValue {
 	resetInitialPos?: boolean;
 	stopDragging?: boolean;
 	boundingRect?: ClientRect;
+	initialPosition?: Position;
 }
 
 export interface DraggableBindings {
@@ -105,10 +106,12 @@ export const Draggable = {
 		}
 
 		function getInitState() {
+			const startPosition = binding && binding.value && binding.value.initialPosition ? binding.value.initialPosition : { x: 0, y: 0 };
+
 			return {
-				startPosition: { x: 0, y: 0 },
+				startPosition: startPosition,
 				initialMousePos: { x: 0, y: 0 },
-				lastPos: { x: 0, y: 0 }
+				lastPos: startPosition
 			}
 		}
 
@@ -119,6 +122,11 @@ export const Draggable = {
 				onPositionChanged();
 			}
 			el.style.position = "absolute";
+
+			const state = getState()
+			if (state) {
+				el.style.transform = `translate(${state.lastPos.x}px, ${state.lastPos.y}px)`;
+			}
 		}
 
 		function setState(state: any) {

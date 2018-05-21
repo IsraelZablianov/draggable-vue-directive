@@ -81,10 +81,11 @@ exports.Draggable = {
             };
         }
         function getInitState() {
+            var startPosition = binding && binding.value && binding.value.initialPosition ? binding.value.initialPosition : { x: 0, y: 0 };
             return {
-                startPosition: { x: 0, y: 0 },
+                startPosition: startPosition,
                 initialMousePos: { x: 0, y: 0 },
-                lastPos: { x: 0, y: 0 }
+                lastPos: startPosition
             };
         }
         function init(binding) {
@@ -94,6 +95,10 @@ exports.Draggable = {
                 onPositionChanged();
             }
             el.style.position = "absolute";
+            var state = getState();
+            if (state) {
+                el.style.transform = "translate(" + state.lastPos.x + "px, " + state.lastPos.y + "px)";
+            }
         }
         function setState(state) {
             handler.setAttribute("draggable-state", JSON.stringify(state));

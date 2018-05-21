@@ -62,7 +62,7 @@ The live demo can be found in https://israelzablianov.github.io/draggable-demo
         data() {
             return {
                 handleId: "handle-id",
-                draggableValue: { 
+                draggableValue: {
                     handle: undefined
                 };
             }
@@ -73,7 +73,7 @@ The live demo can be found in https://israelzablianov.github.io/draggable-demo
   ...
 ```
 
-### draggable Value 
+### draggable Value
 The object passed to the directive is called the directive value.<br>
 For example in `v-draggable="draggableValue"` draggableValue can be an object containing the folowing fields: <br>
 
@@ -110,7 +110,7 @@ will be executed with the current position as param.<br>
         },
         data() {
             return {
-                draggableValue: { 
+                draggableValue: {
                     onPositionChange: this.onPosChanged
                 };
             }
@@ -147,3 +147,10 @@ Required: `false`<br>
 default: `undefined`<br>
 
 Constrains dragging to within the bounds of the rectangle.
+
+#### initialPosition
+Type: `Position`<br>
+Required: `false`<br>
+default: `undefined`<br>
+
+Absolute starting position of this element.
