@@ -10,6 +10,7 @@ export interface DraggableValue {
     resetInitialPos?: boolean;
     stopDragging?: boolean;
     boundingRect?: ClientRect;
+    initialPosition?: Position;
 }
 export interface DraggableBindings {
     value: DraggableValue;
