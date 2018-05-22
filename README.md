@@ -80,6 +80,7 @@ For example in `v-draggable="draggableValue"` draggableValue can be an object co
 * [handle](#handle)
 * [onPositionChange](#onpositionchange)
 * [resetInitialPos](#resetinitialpos)
+* [initialPosition](#initialPosition)
 * [stopDragging](#stopdragging)
 * [boundingRect](#boundingrect)
 
@@ -132,6 +133,13 @@ default: `undefined`<br>
 
 Returns to the initial position the element was before mounted.
 
+#### initialPosition
+Type: `Position`<br>
+Required: `false`<br>
+default: `undefined`<br>
+
+Sets the absolute starting position of this element.<br>
+Will be applied when resetInitialPos is true.
 
 #### stopDragging
 Type: `Boolean`<br>
@@ -147,10 +155,3 @@ Required: `false`<br>
 default: `undefined`<br>
 
 Constrains dragging to within the bounds of the rectangle.
-
-#### initialPosition
-Type: `Position`<br>
-Required: `false`<br>
-default: `undefined`<br>
-
-Absolute starting position of this element.
