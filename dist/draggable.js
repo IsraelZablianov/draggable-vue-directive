@@ -7,7 +7,6 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     }
     return t;
 };
-Object.defineProperty(exports, "__esModule", { value: true });
 function extractHandle(handle) {
     return handle && handle.$el || handle;
 }
@@ -90,15 +89,12 @@ exports.Draggable = {
         }
         function init(binding) {
             if (binding && binding.value && binding.value.resetInitialPos) {
-                el.style.transform = "translate(0px, 0px)";
                 setState(getInitState());
+                var state = getState();
+                el.style.transform = "translate(" + state.lastPos.x + "px, " + state.lastPos.y + "px)";
                 onPositionChanged();
             }
             el.style.position = "absolute";
-            var state = getState();
-            if (state) {
-                el.style.transform = "translate(" + state.lastPos.x + "px, " + state.lastPos.y + "px)";
-            }
         }
         function setState(state) {
             handler.setAttribute("draggable-state", JSON.stringify(state));
@@ -120,4 +116,3 @@ exports.Draggable = {
         }
     }
 };
-//# sourceMappingURL=draggable.js.map

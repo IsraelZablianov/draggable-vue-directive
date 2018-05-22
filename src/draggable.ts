@@ -117,16 +117,13 @@ export const Draggable = {
 
 		function init(binding: DraggableBindings) {
 			if (binding && binding.value && binding.value.resetInitialPos) {
-				el.style.transform = `translate(0px, 0px)`;
-				setState(getInitState());
+                setState(getInitState());
+                const state = getState();
+                el.style.transform = `translate(${state.lastPos.x}px, ${state.lastPos.y}px)`;
 				onPositionChanged();
-			}
+            }
+            
 			el.style.position = "absolute";
-
-			const state = getState()
-			if (state) {
-				el.style.transform = `translate(${state.lastPos.x}px, ${state.lastPos.y}px)`;
-			}
 		}
 
 		function setState(state: any) {
