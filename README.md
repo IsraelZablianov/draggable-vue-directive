@@ -83,8 +83,8 @@ For example in `v-draggable="draggableValue"` draggableValue can be an object co
 * [initialPosition](#initialPosition)
 * [stopDragging](#stopdragging)
 * [boundingRect](#boundingrect)
-
-
+* [boundingElement](#boundingElement)
+* [boundingRectMargin](#boundingRectMargin)
 #### handle
 Type: `HtmlElement | Vue`<br>
 Required: `false`<br>
@@ -99,8 +99,7 @@ Type: `Function`<br>
 Required: `false`<br>
 
 In some cases it is useful to know the coordinates of the element when it's been dragged.<br>
-Passing a callback to `draggableValue` will achieve this goal and every time the element is being dragged the callback
-will be executed with the current position as param.<br>
+Passing a callback to `draggableValue` will achieve this goal and every time the element is being dragged the callback will be executed with 3 params: positionDiff, absolutePosition, event.<br>
 
 ``` js
   import { Draggable } from 'draggable-vue-directive'
@@ -117,9 +116,9 @@ will be executed with the current position as param.<br>
             }
         },
         methods: {
-            onPosChanged: function(pos) {
-                console.log("left corner", pos.x);
-                console.log("top corner", pos.y);
+            onPosChanged: function(positionDiff, absolutePosition, event) {
+                console.log("left corner", absolutePosition.left);
+                console.log("top corner", absolutePosition.top);
             }
         }
   ...
@@ -155,3 +154,20 @@ Required: `false`<br>
 default: `undefined`<br>
 
 Constrains dragging to within the bounds of the rectangle.
+
+
+#### boundingElement
+Type: `HtmlElement`<br>
+Required: `false`<br>
+default: `undefined`<br>
+
+Constrains dragging to within the bounds of the element.
+
+
+#### boundingRectMargin
+Type: `MarginOptions`<br>
+Required: `false`<br>
+default: `undefined`<br>
+
+When using boundingRect or boundingElement, you can pass an object with top, left, bottom, right
+properties, to define a margin between the elements and the boundries.
