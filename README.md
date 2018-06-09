@@ -80,11 +80,11 @@ For example in `v-draggable="draggableValue"` draggableValue can be an object co
 * [handle](#handle)
 * [onPositionChange](#onpositionchange)
 * [resetInitialPos](#resetinitialpos)
-* [initialPosition](#initialPosition)
+* [initialPosition](#initialposition)
 * [stopDragging](#stopdragging)
 * [boundingRect](#boundingrect)
-* [boundingElement](#boundingElement)
-* [boundingRectMargin](#boundingRectMargin)
+* [boundingElement](#boundingelement)
+* [boundingRectMargin](#boundingrectmargin)
 #### handle
 Type: `HtmlElement | Vue`<br>
 Required: `false`<br>
