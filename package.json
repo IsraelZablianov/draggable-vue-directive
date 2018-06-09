@@ -1,6 +1,6 @@
 {
   "name": "draggable-vue-directive",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "A simple directive to handle drag and drop of any Vue component",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
