@@ -3,5 +3,7 @@ export {
     Position,
     DraggableValue,
     DraggableBindings,
-    Draggable
+    Draggable,
+    PositionDiff,
+    MarginOptions
 } from './draggable';
