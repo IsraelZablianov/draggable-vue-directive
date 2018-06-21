@@ -99,7 +99,7 @@ Type: `Function`<br>
 Required: `false`<br>
 
 In some cases it is useful to know the coordinates of the element when it's been dragged.<br>
-Passing a callback to `draggableValue` will achieve this goal and every time the element is being dragged the callback will be executed with 3 params: positionDiff, absolutePosition, event.<br>
+Passing a callback to `draggableValue` will achieve this goal and every time the element is being dragged the callback will be executed with 3 params: positionDiff, absolutePosition (the current position, the first time the directive added to the DOM or being initialized, the value will be undefined unless the element has left and top values), event.<br>
 
 ``` js
   import { Draggable } from 'draggable-vue-directive'
