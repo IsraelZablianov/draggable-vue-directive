@@ -1,1 +1,1 @@
-export { HandleType, Position, DraggableValue, DraggableBindings, Draggable } from './draggable';
+export { HandleType, Position, DraggableValue, DraggableBindings, Draggable, PositionDiff, MarginOptions } from './draggable';

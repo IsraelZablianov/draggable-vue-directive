@@ -1,4 +1,4 @@
-import Vue from "Vue";
+import Vue from "vue";
 export declare type HandleType = Vue | HTMLElement;
 export interface Position {
     left: number;
