@@ -8,6 +8,12 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     return t;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+var ChangePositionType;
+(function (ChangePositionType) {
+    ChangePositionType[ChangePositionType["Start"] = 1] = "Start";
+    ChangePositionType[ChangePositionType["End"] = 2] = "End";
+    ChangePositionType[ChangePositionType["Move"] = 3] = "Move";
+})(ChangePositionType || (ChangePositionType = {}));
 function extractHandle(handle) {
     return handle && handle.$el || handle;
 }
@@ -105,11 +111,11 @@ exports.Draggable = {
             });
             document.removeEventListener("mousemove", mouseMove);
             document.removeEventListener("mouseup", mouseUp);
-			handlePositionChanged(event, true);
+            handlePositionChanged(event, ChangePositionType.End);
         }
         function mouseDown(event) {
             setState({ initialMousePos: getInitialMousePosition(event) });
-            handlePositionChanged(event);
+            handlePositionChanged(event, ChangePositionType.Start);
             document.addEventListener("mousemove", mouseMove);
             document.addEventListener("mouseup", mouseUp);
         }
@@ -145,7 +151,7 @@ exports.Draggable = {
             var state = __assign({}, prevState, partialState);
             handler.setAttribute("draggable-state", JSON.stringify(state));
         }
-        function handlePositionChanged(event, moveEnded) {
+        function handlePositionChanged(event, changePositionType) {
             var state = getState();
             var posDiff = { x: 0, y: 0 };
             if (state.currentDragPosition && state.startDragPosition) {
@@ -153,12 +159,15 @@ exports.Draggable = {
                 posDiff.y = state.currentDragPosition.top - state.startDragPosition.top;
             }
             var currentPosition = state.currentDragPosition && __assign({}, state.currentDragPosition);
-			if(moveEnded){
-				binding.value && binding.value.onDragEnd && state && binding.value.onDragEnd(posDiff, currentPosition, event);
-			}
-			else {
-				binding.value && binding.value.onPositionChange && state && binding.value.onPositionChange(posDiff, currentPosition, event);
-			}
+            if (changePositionType === ChangePositionType.End) {
+                binding.value && binding.value.onDragEnd && state && binding.value.onDragEnd(posDiff, currentPosition, event);
+            }
+            else if (changePositionType === ChangePositionType.Start) {
+                binding.value && binding.value.onDragStart && state && binding.value.onDragStart(posDiff, currentPosition, event);
+            }
+            else {
+                binding.value && binding.value.onPositionChange && state && binding.value.onPositionChange(posDiff, currentPosition, event);
+            }
         }
         function getState() {
             return JSON.parse(handler.getAttribute("draggable-state")) || {};

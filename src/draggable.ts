@@ -21,7 +21,8 @@ export interface MarginOptions {
 export interface DraggableValue {
 	handle?: HandleType;
 	onPositionChange?: (posDiff?: PositionDiff, pos?: Position, event?: MouseEvent) => void;
-    onDragEnd?: (posDiff?: PositionDiff, pos?: Position, event?: MouseEvent) => void;
+	onDragEnd?: (posDiff?: PositionDiff, pos?: Position, event?: MouseEvent) => void;
+	onDragStart?: (posDiff?: PositionDiff, pos?: Position, event?: MouseEvent) => void;
 	resetInitialPos?: boolean;
 	stopDragging?: boolean;
 	boundingRect?: ClientRect;
@@ -41,24 +42,30 @@ export interface DraggableState {
 	initialMousePos?: Position;
 }
 
+enum ChangePositionType {
+	Start = 1,
+	End,
+	Move
+}
+
 function extractHandle(handle: HandleType): HTMLElement {
 	return handle && (handle as Vue).$el || handle as HTMLElement;
 }
 
 function getPosWithBoundaries(elementRect: ClientRect, boundingRect: ClientRect, left: number, top: number, boundingRectMargin: MarginOptions = {}): Position {
-	const adjustedPos: Position = {left, top};
+	const adjustedPos: Position = { left, top };
 	const { height, width } = elementRect;
-	const topRect = top, 
-		bottomRect = top + height, 
-		leftRect = left, 
+	const topRect = top,
+		bottomRect = top + height,
+		leftRect = left,
 		rightRect = left + width;
-	const marginTop = boundingRectMargin.top || 0, 
-		marginBottom = boundingRectMargin.bottom || 0, 
-		marginLeft = boundingRectMargin.left || 0, 
+	const marginTop = boundingRectMargin.top || 0,
+		marginBottom = boundingRectMargin.bottom || 0,
+		marginLeft = boundingRectMargin.left || 0,
 		marginRight = boundingRectMargin.right || 0;
-	const topBoundary = boundingRect.top + marginTop, 
-		bottomBoundary = boundingRect.bottom - marginBottom, 
-		leftBoundary = boundingRect.left + marginLeft, 
+	const topBoundary = boundingRect.top + marginTop,
+		bottomBoundary = boundingRect.bottom - marginBottom,
+		leftBoundary = boundingRect.left + marginLeft,
 		rightBoundary = boundingRect.right - marginRight;
 	if (topRect < topBoundary) {
 		adjustedPos.top = topBoundary;
@@ -119,11 +126,11 @@ export const Draggable = {
 
 			const boundingRect = getBoundingRect();
 			const elementRect = el.getBoundingClientRect();
-			
+
 			if (boundingRect && elementRect) {
 				currentDragPosition = getPosWithBoundaries(
-					elementRect, 
-					boundingRect, 
+					elementRect,
+					boundingRect,
 					currentDragPosition.left,
 					currentDragPosition.top,
 					binding.value.boundingRectMargin
@@ -139,9 +146,9 @@ export const Draggable = {
 			if (!binding.value) {
 				return;
 			}
-			return binding.value.boundingRect 
-				|| binding.value.boundingElement 
-					&& binding.value.boundingElement.getBoundingClientRect();
+			return binding.value.boundingRect
+				|| binding.value.boundingElement
+				&& binding.value.boundingElement.getBoundingClientRect();
 		}
 
 		function updateElementStyle(): void {
@@ -163,12 +170,12 @@ export const Draggable = {
 			});
 			document.removeEventListener("mousemove", mouseMove);
 			document.removeEventListener("mouseup", mouseUp);
-            handlePositionChanged(event, true);
+			handlePositionChanged(event, ChangePositionType.End);
 		}
 
 		function mouseDown(event: MouseEvent) {
-			setState({initialMousePos: getInitialMousePosition(event)});
-			handlePositionChanged(event);
+			setState({ initialMousePos: getInitialMousePosition(event) });
+			handlePositionChanged(event, ChangePositionType.Start);
 			document.addEventListener("mousemove", mouseMove);
 			document.addEventListener("mouseup", mouseUp);
 		}
@@ -181,11 +188,11 @@ export const Draggable = {
 		}
 
 		function getRectPosition(): Position | undefined {
-			const clientRect =  el.getBoundingClientRect();
+			const clientRect = el.getBoundingClientRect();
 			if (!clientRect.height || !clientRect.width) {
 				return;
 			}
-			return { left: clientRect.left, top: clientRect.top};
+			return { left: clientRect.left, top: clientRect.top };
 		}
 
 		function initializeState(event?: MouseEvent): void {
@@ -213,20 +220,25 @@ export const Draggable = {
 			handler.setAttribute("draggable-state", JSON.stringify(state));
 		}
 
-		function handlePositionChanged(event?: MouseEvent, moveEnded?: Boolean) {
+		function handlePositionChanged(event?: MouseEvent, changePositionType?: ChangePositionType) {
+
 			const state = getState();
-			const posDiff: PositionDiff = { x: 0, y: 0};
+			const posDiff: PositionDiff = { x: 0, y: 0 };
 			if (state.currentDragPosition && state.startDragPosition) {
 				posDiff.x = state.currentDragPosition.left - state.startDragPosition.left;
 				posDiff.y = state.currentDragPosition.top - state.startDragPosition.top;
 			}
 			const currentPosition = state.currentDragPosition && { ...state.currentDragPosition };
-            if(moveEnded){
-                binding.value && binding.value.onDragEnd && state && binding.value.onDragEnd(posDiff, currentPosition, event);
-            }
-            else {
-                binding.value && binding.value.onPositionChange && state && binding.value.onPositionChange(posDiff, currentPosition, event);
-            }
+
+			if (changePositionType === ChangePositionType.End) {
+				binding.value && binding.value.onDragEnd && state && binding.value.onDragEnd(posDiff, currentPosition, event);
+			}
+			else if (changePositionType === ChangePositionType.Start) {
+				binding.value && binding.value.onDragStart && state && binding.value.onDragStart(posDiff, currentPosition, event);
+			}
+			else {
+				binding.value && binding.value.onPositionChange && state && binding.value.onPositionChange(posDiff, currentPosition, event);
+			}
 		}
 
 		function getState(): DraggableState {

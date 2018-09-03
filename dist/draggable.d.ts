@@ -18,6 +18,7 @@ export interface DraggableValue {
     handle?: HandleType;
     onPositionChange?: (posDiff?: PositionDiff, pos?: Position, event?: MouseEvent) => void;
     onDragEnd?: (posDiff?: PositionDiff, pos?: Position, event?: MouseEvent) => void;
+    onDragStart?: (posDiff?: PositionDiff, pos?: Position, event?: MouseEvent) => void;
     resetInitialPos?: boolean;
     stopDragging?: boolean;
     boundingRect?: ClientRect;
