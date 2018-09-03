@@ -21,6 +21,7 @@ export interface MarginOptions {
 export interface DraggableValue {
 	handle?: HandleType;
 	onPositionChange?: (posDiff?: PositionDiff, pos?: Position, event?: MouseEvent) => void;
+    onDragEnd?: (posDiff?: PositionDiff, pos?: Position, event?: MouseEvent) => void;
 	resetInitialPos?: boolean;
 	stopDragging?: boolean;
 	boundingRect?: ClientRect;
@@ -153,15 +154,16 @@ export const Draggable = {
 			el.style.top = `${state.currentDragPosition.top}px`;
 		}
 
-		function mouseUp() {
+		function mouseUp(event: MouseEvent) {
 			const currentRectPosition = getRectPosition();
 			setState({
 				initialMousePos: undefined,
 				startDragPosition: currentRectPosition,
 				currentDragPosition: currentRectPosition
-			})
+			});
 			document.removeEventListener("mousemove", mouseMove);
 			document.removeEventListener("mouseup", mouseUp);
+            handlePositionChanged(event, true);
 		}
 
 		function mouseDown(event: MouseEvent) {
@@ -211,7 +213,7 @@ export const Draggable = {
 			handler.setAttribute("draggable-state", JSON.stringify(state));
 		}
 
-		function handlePositionChanged(event?: MouseEvent) {
+		function handlePositionChanged(event?: MouseEvent, moveEnded?: Boolean) {
 			const state = getState();
 			const posDiff: PositionDiff = { x: 0, y: 0};
 			if (state.currentDragPosition && state.startDragPosition) {
@@ -219,7 +221,12 @@ export const Draggable = {
 				posDiff.y = state.currentDragPosition.top - state.startDragPosition.top;
 			}
 			const currentPosition = state.currentDragPosition && { ...state.currentDragPosition };
-			binding.value && binding.value.onPositionChange && state && binding.value.onPositionChange(posDiff, currentPosition, event);
+            if(moveEnded){
+                binding.value && binding.value.onDragEnd && state && binding.value.onDragEnd(posDiff, currentPosition, event);
+            }
+            else {
+                binding.value && binding.value.onPositionChange && state && binding.value.onPositionChange(posDiff, currentPosition, event);
+            }
 		}
 
 		function getState(): DraggableState {

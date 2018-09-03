@@ -79,6 +79,7 @@ For example in `v-draggable="draggableValue"` draggableValue can be an object co
 
 * [handle](#handle)
 * [onPositionChange](#onpositionchange)
+* [onDragEnd](#ondragend)
 * [resetInitialPos](#resetinitialpos)
 * [initialPosition](#initialposition)
 * [stopDragging](#stopdragging)
@@ -123,7 +124,8 @@ Passing a callback to `draggableValue` will achieve this goal and every time the
         }
   ...
 ```
-
+#### onDragEnd
+See [onPositionChange](#onpositionchange)
 
 #### resetInitialPos
 Type: `Boolean`<br>
