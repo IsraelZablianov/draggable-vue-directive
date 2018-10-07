@@ -106,10 +106,12 @@ export const Draggable = {
 
 		function mouseMove(event: MouseEvent) {
 			event.preventDefault();
+
 			const stopDragging = binding.value && binding.value.stopDragging;
 			if (stopDragging) {
 				return;
 			}
+			
 			let state = getState();
 			if (!state.startDragPosition || !state.initialMousePos) {
 				initializeState(event);
@@ -146,6 +148,7 @@ export const Draggable = {
 			if (!binding.value) {
 				return;
 			}
+
 			return binding.value.boundingRect
 				|| binding.value.boundingElement
 				&& binding.value.boundingElement.getBoundingClientRect();
@@ -156,24 +159,30 @@ export const Draggable = {
 			if (!state.currentDragPosition) {
 				return;
 			}
+
 			el.style.position = "fixed";
 			el.style.left = `${state.currentDragPosition.left}px`;
 			el.style.top = `${state.currentDragPosition.top}px`;
 		}
 
 		function mouseUp(event: MouseEvent) {
+			event.preventDefault();
+
 			const currentRectPosition = getRectPosition();
 			setState({
 				initialMousePos: undefined,
 				startDragPosition: currentRectPosition,
 				currentDragPosition: currentRectPosition
 			});
+
 			document.removeEventListener("mousemove", mouseMove);
 			document.removeEventListener("mouseup", mouseUp);
 			handlePositionChanged(event, ChangePositionType.End);
 		}
 
 		function mouseDown(event: MouseEvent) {
+			event.preventDefault();
+
 			setState({ initialMousePos: getInitialMousePosition(event) });
 			handlePositionChanged(event, ChangePositionType.Start);
 			document.addEventListener("mousemove", mouseMove);
