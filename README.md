@@ -1,4 +1,4 @@
-<h1 style="text-align:center">draggable-vue-directive</h1>
+<h1 align="center">draggable-vue-directive</h1>
 
 [![GitHub open issues](https://img.shields.io/github/issues/IsraelZablianov/draggable-vue-directive.svg)](https://github.com/IsraelZablianov/draggable-vue-directive/issues?q=is%3Aopen+is%3Aissue)
 [![npm download](https://img.shields.io/npm/dt/draggable-vue-directive.svg)](https://www.npmjs.com/package/draggable-vue-directive)
