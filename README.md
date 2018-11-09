@@ -80,7 +80,7 @@ You can view the live demo here: https://israelzablianov.github.io/draggable-dem
   ...
 ```
 
-### `draggable` Value
+## `draggable` Value
 
 The object passed to the directive is called the directive’s <dfn>value</dfn>.<br>
 For example, in `v-draggable="draggableValue"`, `draggableValue` can be an object containing the folowing fields:<br>
