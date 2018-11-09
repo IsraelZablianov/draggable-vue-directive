@@ -22,16 +22,20 @@ npm install draggable-vue-directive --save
 
 ![demo gif](https://media.giphy.com/media/3o6nUO1lWMkeyH5nfW/giphy.gif)
 
-The live demo can be found in https://israelzablianov.github.io/draggable-demo
+You can view the live demo here: https://israelzablianov.github.io/draggable-demo
 
 
-### Typical use:
+## Examples
+
+### Without Handler
+
 ``` html
 <div v-draggable>
     classic draggable
 </div>
 ```
-.vue file:
+
+`.vue` file:
 ``` js
   import { Draggable } from 'draggable-vue-directive'
   ...
@@ -42,7 +46,8 @@ The live demo can be found in https://israelzablianov.github.io/draggable-demo
   ...
 ```
 
-### with handler:
+### With Handler
+
 ``` html
 <div v-draggable="draggableValue">
     <div :ref="handleId">
@@ -51,7 +56,9 @@ The live demo can be found in https://israelzablianov.github.io/draggable-demo
     drag and drop using handler
 </div>
 ```
-.vue file:
+
+`.vue` file:
+
 ``` js
   import { Draggable } from 'draggable-vue-directive'
   ...
@@ -73,35 +80,43 @@ The live demo can be found in https://israelzablianov.github.io/draggable-demo
   ...
 ```
 
-### draggable Value
-The object passed to the directive is called the directive value.<br>
-For example in `v-draggable="draggableValue"` draggableValue can be an object containing the folowing fields: <br>
+### `draggable` Value
 
-* [handle](#handle)
-* [onPositionChange](#onpositionchange)
-* [onDragEnd](#ondragend)
-* [onDragStart](#ondragstart)
-* [resetInitialPos](#resetinitialpos)
-* [initialPosition](#initialposition)
-* [stopDragging](#stopdragging)
-* [boundingRect](#boundingrect)
-* [boundingElement](#boundingelement)
-* [boundingRectMargin](#boundingrectmargin)
+The object passed to the directive is called the directive’s <dfn>value</dfn>.<br>
+For example, in `v-draggable="draggableValue"`, `draggableValue` can be an object containing the folowing fields:<br>
+
+* [`handle`](#handle)
+* [`onPositionChange`](#onpositionchange)
+* [`onDragEnd`](#ondragend)
+* [`onDragStart`](#ondragstart)
+* [`resetInitialPos`](#resetinitialpos)
+* [`initialPosition`](#initialposition)
+* [`stopDragging`](#stopdragging)
+* [`boundingRect`](#boundingrect)
+* [`boundingElement`](#boundingelement)
+* [`boundingRectMargin`](#boundingrectmargin)
+
 #### handle
 Type: `HtmlElement | Vue`<br>
 Required: `false`<br>
 
-There are two ways to use the draggable-vue-directive as showen in the demo above.<br>
-The simple use is just to put the directive on any Vue component or Html element and boom! the element is draggable.<br>
-The second option is to use handler. if you choose to use handler, the component itself will be draggable only using the handler.
+There are two ways to use the `draggable` directive, as shown in the demo above.<br>
+
+1. **The simple use.** Just to put the directive on any Vue component or HTML element, and…boom! The element is draggable.
+2. **Using a handler.** If you choose to use a handler, the component itself will only be draggable using the handler.
 
 
 #### onPositionChange
 Type: `Function`<br>
 Required: `false`<br>
 
-In some cases it is useful to know the coordinates of the element when it's been dragged.<br>
-Passing a callback to `draggableValue` will achieve this goal and every time the element is being dragged the callback will be executed with 3 params: positionDiff, absolutePosition (the current position, the first time the directive added to the DOM or being initialized, the value will be undefined unless the element has left and top values), event.<br>
+Sometimes you need to know the element’s coordinates while it’s being dragged.<br>
+Passing a callback to `draggableValue` will achieve this goal; 
+while dragging the element, the callback will be executed with 3 params: 
+
+- `positionDiff`
+- `absolutePosition` (the current position; the first time the directive is added to the DOM or being initialized, the value will be `undefined`, unless the element has `left` and `top` values)
+- `event` (the event object)
 
 ``` js
   import { Draggable } from 'draggable-vue-directive'
@@ -125,24 +140,25 @@ Passing a callback to `draggableValue` will achieve this goal and every time the
         }
   ...
 ```
+
 #### onDragEnd
 Type: `Function`<br>
 Required: `false`<br>
 
-Emits only when draging ended, has the same functionality as [onPositionChange](#onpositionchange).
+Emits only when dragging ends. Has the same functionality as [`onPositionChange`](#onpositionchange).
 
 #### onDragStart
 Type: `Function`<br>
 Required: `false`<br>
 
-Emits only when draging started, has the same functionality as [onPositionChange](#onpositionchange).
+Emits only when dragging starts. Has the same functionality as [`onPositionChange`](#onpositionchange).
 
 #### resetInitialPos
 Type: `Boolean`<br>
 Required: `false`<br>
 default: `undefined`<br>
 
-Returns to the initial position the element was before mounted.
+Returns to the initial position of the element, before it is mounted.
 
 #### initialPosition
 Type: `Position`<br>
@@ -150,7 +166,7 @@ Required: `false`<br>
 default: `undefined`<br>
 
 Sets the absolute starting position of this element.<br>
-Will be applied when resetInitialPos is true.
+Will be applied when `resetInitialPos` is `true`.
 
 #### stopDragging
 Type: `Boolean`<br>
@@ -181,5 +197,5 @@ Type: `MarginOptions`<br>
 Required: `false`<br>
 default: `undefined`<br>
 
-When using boundingRect or boundingElement, you can pass an object with top, left, bottom, right
-properties, to define a margin between the elements and the boundries.
+When using `boundingRect` or `boundingElement`, you can pass an object with 
+`top`, `left`, `bottom`, and `right` properties, to define a margin between the elements and the boundaries.
