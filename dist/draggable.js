@@ -115,7 +115,6 @@ exports.Draggable = {
             handlePositionChanged(event, ChangePositionType.End);
         }
         function mouseDown(event) {
-            event.preventDefault();
             setState({ initialMousePos: getInitialMousePosition(event) });
             handlePositionChanged(event, ChangePositionType.Start);
             document.addEventListener("mousemove", mouseMove);

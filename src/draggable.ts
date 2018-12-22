@@ -181,8 +181,6 @@ export const Draggable = {
 		}
 
 		function mouseDown(event: MouseEvent) {
-			event.preventDefault();
-
 			setState({ initialMousePos: getInitialMousePosition(event) });
 			handlePositionChanged(event, ChangePositionType.Start);
 			document.addEventListener("mousemove", mouseMove);
