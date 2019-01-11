@@ -6,7 +6,7 @@
 [![npm version](https://img.shields.io/npm/v/draggable-vue-directive.svg)](https://www.npmjs.com/package/draggable-vue-directive)
 [![Package Quality](http://npm.packagequality.com/shield/draggable-vue-directive.svg)](http://packagequality.com/#?package=draggable-vue-directive)
 [![vue2](https://img.shields.io/badge/vue-2.x-brightgreen.svg)](https://vuejs.org/)
-[![MIT License](https://img.shields.io/github/license/IsraelZablianov/draggable-vue-directive.svg)](https://github.com/IsraelZablianov/draggable-vue-directive/blob/master/LICENSE)
+[![MIT License](https://img.shields.io/github/license/IsraelZablianov/draggable-vue-directive.svg)](https://github.com/IsraelZablianov/draggable-vue-directive/blob/master/LICENSE.md)
 
 
 Vue directive (Vue.js 2.x) for handling element drag & drop.
