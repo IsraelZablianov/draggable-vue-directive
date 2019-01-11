@@ -39,10 +39,10 @@ function getPosWithBoundaries(elementRect, boundingRect, left, top, boundingRect
     return adjustedPos;
 }
 exports.Draggable = {
-    bind: function (el, binding) {
-        exports.Draggable.update(el, binding);
+    bind: function (el, binding, vnode, oldVnode) {
+        exports.Draggable.update(el, binding, vnode, oldVnode);
     },
-    update: function (el, binding) {
+    update: function (el, binding, vnode, oldVnode) {
         if (binding.value && binding.value.stopDragging) {
             return;
         }

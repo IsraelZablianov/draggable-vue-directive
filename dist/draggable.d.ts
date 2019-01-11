@@ -1,4 +1,4 @@
-import Vue from "vue";
+import Vue, { DirectiveOptions, VNodeDirective } from "vue";
 export declare type HandleType = Vue | HTMLElement;
 export interface Position {
     left: number;
@@ -26,7 +26,7 @@ export interface DraggableValue {
     boundingRectMargin?: MarginOptions;
     initialPosition?: Position;
 }
-export interface DraggableBindings {
+export interface DraggableBindings extends VNodeDirective {
     value: DraggableValue;
 }
 export interface DraggableState {
@@ -35,7 +35,4 @@ export interface DraggableState {
     currentDragPosition: Position;
     initialMousePos?: Position;
 }
-export declare const Draggable: {
-    bind(el: HTMLElement, binding: DraggableBindings): void;
-    update(el: HTMLElement, binding: DraggableBindings): void;
-};
+export declare const Draggable: DirectiveOptions;

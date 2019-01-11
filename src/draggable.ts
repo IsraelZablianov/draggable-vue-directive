@@ -1,4 +1,4 @@
-import Vue from "vue";
+import Vue, { DirectiveOptions, VNodeDirective, VNode } from "vue";
 
 export type HandleType = Vue | HTMLElement;
 export interface Position {
@@ -31,7 +31,7 @@ export interface DraggableValue {
 	initialPosition?: Position;
 }
 
-export interface DraggableBindings {
+export interface DraggableBindings extends VNodeDirective {
 	value: DraggableValue;
 }
 
@@ -82,11 +82,11 @@ function getPosWithBoundaries(elementRect: ClientRect, boundingRect: ClientRect,
 	return adjustedPos;
 }
 
-export const Draggable = {
-	bind(el: HTMLElement, binding: DraggableBindings) {
-		Draggable.update(el, binding);
+export const Draggable: DirectiveOptions = {
+	bind(el: HTMLElement, binding: DraggableBindings, vnode: VNode, oldVnode: VNode) {
+		Draggable.update(el, binding, vnode, oldVnode);
 	},
-	update(el: HTMLElement, binding: DraggableBindings) {
+	update(el: HTMLElement, binding: DraggableBindings, vnode: VNode, oldVnode: VNode) {
 		if (binding.value && binding.value.stopDragging) {
 			return;
 		}
