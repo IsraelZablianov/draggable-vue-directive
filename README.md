@@ -71,8 +71,8 @@ You can view the live demo here: https://israelzablianov.github.io/draggable-dem
                 handleId: "handle-id",
                 draggableValue: {
                     handle: undefined
-                };
-            }
+                }
+            };
         },
         mounted() {
             this.draggableValue.handle = this.$refs[this.handleId];
@@ -129,8 +129,8 @@ while dragging the element, the callback will be executed with 3 params:
             return {
                 draggableValue: {
                     onPositionChange: this.onPosChanged
-                };
-            }
+                }
+            };
         },
         methods: {
             onPosChanged: function(positionDiff, absolutePosition, event) {
