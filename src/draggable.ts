@@ -29,6 +29,7 @@ export interface DraggableValue {
 	boundingElement?: HTMLElement;
 	boundingRectMargin?: MarginOptions;
 	initialPosition?: Position;
+	allowTouch?: boolean;
 }
 
 export interface DraggableBindings extends VNodeDirective {
@@ -98,10 +99,22 @@ export const Draggable: DirectiveOptions = {
 		if (!handler.getAttribute("draggable")) {
 			el.removeEventListener("mousedown", (el as any)["listener"]);
 			handler.addEventListener("mousedown", mouseDown);
+			if (binding.value.allowTouch) {
+				el.removeEventListener("touchstart", (el as any)["listener"]);
+				handler.addEventListener("touchstart", touchStart);
+			}
 			handler.setAttribute("draggable", "true");
 			(el as any)["listener"] = mouseDown;
 			initializeState();
 			handlePositionChanged();
+		}
+
+		function touchMove(event: TouchEvent) {
+			event.preventDefault();
+			const touch = event.touches[event.touches.length - 1];
+			if (touch) {
+				mouseMove(new MouseEvent("mousemove", { clientX: touch.clientX, clientY: touch.clientY }));
+			}
 		}
 
 		function mouseMove(event: MouseEvent) {
@@ -177,7 +190,19 @@ export const Draggable: DirectiveOptions = {
 
 			document.removeEventListener("mousemove", mouseMove);
 			document.removeEventListener("mouseup", mouseUp);
+			if (binding.value.allowTouch) {
+				document.removeEventListener("touchmove", touchMove);
+				document.removeEventListener("touchend", touchEnd);
+			}
 			handlePositionChanged(event, ChangePositionType.End);
+		}
+
+		function touchEnd(event: TouchEvent) {
+			event.preventDefault();
+			const touch = event.changedTouches[event.changedTouches.length - 1];
+			if (touch) {
+				mouseUp(new MouseEvent('mouseup', { clientX: touch.clientX, clientY: touch.clientY  }));
+			}
 		}
 
 		function mouseDown(event: MouseEvent) {
@@ -185,6 +210,17 @@ export const Draggable: DirectiveOptions = {
 			handlePositionChanged(event, ChangePositionType.Start);
 			document.addEventListener("mousemove", mouseMove);
 			document.addEventListener("mouseup", mouseUp);
+			if (binding.value.allowTouch) {
+				document.addEventListener("touchmove", touchMove);
+				document.addEventListener("touchend", touchEnd);
+			}
+		}
+
+		function touchStart(event: TouchEvent) {
+			const touch = event.changedTouches[event.changedTouches.length - 1];
+			if (touch) {
+				mouseDown(new MouseEvent('mousedown', { clientX: touch.clientX, clientY: touch.clientY  }));
+			}
 		}
 
 		function getInitialMousePosition(event?: MouseEvent): Position | undefined {

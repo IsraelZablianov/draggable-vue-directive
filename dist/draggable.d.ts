@@ -25,6 +25,7 @@ export interface DraggableValue {
     boundingElement?: HTMLElement;
     boundingRectMargin?: MarginOptions;
     initialPosition?: Position;
+    allowTouch?: boolean;
 }
 export interface DraggableBindings extends VNodeDirective {
     value: DraggableValue;
