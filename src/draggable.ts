@@ -1,6 +1,7 @@
 import Vue, { DirectiveOptions, VNodeDirective, VNode } from "vue";
 
 export type HandleType = Vue | HTMLElement;
+export type MouseOrTouchEvent = MouseEvent | TouchEvent;
 export interface Position {
 	left: number;
 	top: number;
@@ -20,9 +21,9 @@ export interface MarginOptions {
 
 export interface DraggableValue {
 	handle?: HandleType;
-	onPositionChange?: (posDiff?: PositionDiff, pos?: Position, event?: MouseEvent) => void;
-	onDragEnd?: (posDiff?: PositionDiff, pos?: Position, event?: MouseEvent) => void;
-	onDragStart?: (posDiff?: PositionDiff, pos?: Position, event?: MouseEvent) => void;
+	onPositionChange?: (posDiff?: PositionDiff, pos?: Position, event?: MouseOrTouchEvent) => void;
+	onDragEnd?: (posDiff?: PositionDiff, pos?: Position, event?: MouseOrTouchEvent) => void;
+	onDragStart?: (posDiff?: PositionDiff, pos?: Position, event?: MouseOrTouchEvent) => void;
 	resetInitialPos?: boolean;
 	stopDragging?: boolean;
 	boundingRect?: ClientRect;
@@ -97,24 +98,16 @@ export const Draggable: DirectiveOptions = {
 		}
 		if (!handler.getAttribute("draggable")) {
 			el.removeEventListener("mousedown", (el as any)["listener"]);
-			handler.addEventListener("mousedown", mouseDown);
+			handler.addEventListener("mousedown", moveStart);
 			el.removeEventListener("touchstart", (el as any)["listener"]);
-			handler.addEventListener("touchstart", touchStart);
+			handler.addEventListener("touchstart", moveStart);
 			handler.setAttribute("draggable", "true");
-			(el as any)["listener"] = mouseDown;
+			(el as any)["listener"] = moveStart;
 			initializeState();
 			handlePositionChanged();
 		}
 
-		function touchMove(event: TouchEvent) {
-			event.preventDefault();
-			const touch = event.touches[event.touches.length - 1];
-			if (touch) {
-				mouseMove(new MouseEvent("mousemove", { clientX: touch.clientX, clientY: touch.clientY }));
-			}
-		}
-
-		function mouseMove(event: MouseEvent) {
+		function move(event: MouseOrTouchEvent) {
 			event.preventDefault();
 
 			const stopDragging = binding.value && binding.value.stopDragging;
@@ -128,8 +121,9 @@ export const Draggable: DirectiveOptions = {
 				state = getState();
 			}
 
-			let dx = event.clientX - state.initialMousePos.left;
-			let dy = event.clientY - state.initialMousePos.top;
+			const pos = getInitialMousePosition(event);
+			let dx = pos.left - state.initialMousePos.left;
+			let dy = pos.top - state.initialMousePos.top;
 
 			let currentDragPosition = {
 				left: state.startDragPosition.left + dx,
@@ -175,8 +169,12 @@ export const Draggable: DirectiveOptions = {
 			el.style.top = `${state.currentDragPosition.top}px`;
 		}
 
-		function mouseUp(event: MouseEvent) {
+		function moveEnd(event: MouseOrTouchEvent) {
 			event.preventDefault();
+			document.removeEventListener("mousemove", move);
+			document.removeEventListener("mouseup", moveEnd);
+			document.removeEventListener("touchmove", move);
+			document.removeEventListener("touchend", moveEnd);
 
 			const currentRectPosition = getRectPosition();
 			setState({
@@ -185,42 +183,32 @@ export const Draggable: DirectiveOptions = {
 				currentDragPosition: currentRectPosition
 			});
 
-			document.removeEventListener("mousemove", mouseMove);
-			document.removeEventListener("mouseup", mouseUp);
-			document.removeEventListener("touchmove", touchMove);
-			document.removeEventListener("touchend", touchEnd);
 			handlePositionChanged(event, ChangePositionType.End);
-		}
+		} 
 
-		function touchEnd(event: TouchEvent) {
-			event.preventDefault();
-			const touch = event.changedTouches[event.changedTouches.length - 1];
-			if (touch) {
-				mouseUp(new MouseEvent('mouseup', { clientX: touch.clientX, clientY: touch.clientY  }));
-			}
-		}
-
-		function mouseDown(event: MouseEvent) {
+		function moveStart(event: MouseOrTouchEvent) {
 			setState({ initialMousePos: getInitialMousePosition(event) });
 			handlePositionChanged(event, ChangePositionType.Start);
-			document.addEventListener("mousemove", mouseMove);
-			document.addEventListener("mouseup", mouseUp);
-			document.addEventListener("touchmove", touchMove);
-			document.addEventListener("touchend", touchEnd);
+			document.addEventListener("mousemove", move);
+			document.addEventListener("mouseup", moveEnd);
+			document.addEventListener("touchmove", move);
+			document.addEventListener("touchend", moveEnd);
 		}
 
-		function touchStart(event: TouchEvent) {
-			const touch = event.changedTouches[event.changedTouches.length - 1];
-			if (touch) {
-				mouseDown(new MouseEvent('mousedown', { clientX: touch.clientX, clientY: touch.clientY  }));
+		function getInitialMousePosition(event?: MouseOrTouchEvent): Position | undefined {
+			if (event instanceof MouseEvent) {
+				return {
+					left: event.clientX,
+					top: event.clientY
+				}
 			}
-		}
-
-		function getInitialMousePosition(event?: MouseEvent): Position | undefined {
-			return event && {
-				left: event.clientX,
-				top: event.clientY
-			};
+			if (event instanceof TouchEvent) {
+				const touch = event.changedTouches[event.changedTouches.length - 1];
+				return {
+					left: touch.clientX,
+					top: touch.clientY
+				}
+			}
 		}
 
 		function getRectPosition(): Position | undefined {
@@ -231,7 +219,7 @@ export const Draggable: DirectiveOptions = {
 			return { left: clientRect.left, top: clientRect.top };
 		}
 
-		function initializeState(event?: MouseEvent): void {
+		function initializeState(event?: MouseOrTouchEvent): void {
 			const state = getState();
 			const initialRectPositionFromBinding = binding && binding.value && binding.value.initialPosition;
 			const initialRectPositionFromState = state.initialPosition;
@@ -256,8 +244,7 @@ export const Draggable: DirectiveOptions = {
 			handler.setAttribute("draggable-state", JSON.stringify(state));
 		}
 
-		function handlePositionChanged(event?: MouseEvent, changePositionType?: ChangePositionType) {
-
+		function handlePositionChanged(event?: MouseOrTouchEvent, changePositionType?: ChangePositionType) {
 			const state = getState();
 			const posDiff: PositionDiff = { x: 0, y: 0 };
 			if (state.currentDragPosition && state.startDragPosition) {

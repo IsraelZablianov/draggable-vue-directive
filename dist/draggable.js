@@ -1,4 +1,16 @@
-var vue_1 = require("vue");
+"use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
 var ChangePositionType;
 (function (ChangePositionType) {
     ChangePositionType[ChangePositionType["Start"] = 1] = "Start";
@@ -6,12 +18,7 @@ var ChangePositionType;
     ChangePositionType[ChangePositionType["Move"] = 3] = "Move";
 })(ChangePositionType || (ChangePositionType = {}));
 function extractHandle(handle) {
-    return handle && (handle);
-    as;
-    vue_1.default;
-    $el || handle;
-    as;
-    HTMLElement;
+    return handle && handle.$el || handle;
 }
 function getPosWithBoundaries(elementRect, boundingRect, left, top, boundingRectMargin) {
     if (boundingRectMargin === void 0) { boundingRectMargin = {}; }
@@ -48,30 +55,16 @@ exports.Draggable = {
             handlePositionChanged();
         }
         if (!handler.getAttribute("draggable")) {
-            el.removeEventListener("mousedown", (el), as, any)["listener"];
-            ;
-            if (binding.value.allowTouch) {
-                el.removeEventListener("touchstart", (el), as, any)["listener"];
-                ;
-                handler.addEventListener("touchstart", touchStart);
-            }
-            handler.addEventListener("mousedown", mouseDown);
+            el.removeEventListener("mousedown", el["listener"]);
+            handler.addEventListener("mousedown", moveStart);
+            el.removeEventListener("touchstart", el["listener"]);
+            handler.addEventListener("touchstart", moveStart);
             handler.setAttribute("draggable", "true");
-            (el);
-            as;
-            any;
-            "listener" = mouseDown[0];
+            el["listener"] = moveStart;
             initializeState();
             handlePositionChanged();
         }
-        function touchMove(event) {
-            event.preventDefault();
-            var touch = event.touches[event.touches.length - 1];
-            if (touch) {
-                mouseMove(new MouseEvent("mousemove", { clientX: touch.clientX, clientY: touch.clientY }));
-            }
-        }
-        function mouseMove(event) {
+        function move(event) {
             event.preventDefault();
             var stopDragging = binding.value && binding.value.stopDragging;
             if (stopDragging) {
@@ -82,8 +75,9 @@ exports.Draggable = {
                 initializeState(event);
                 state = getState();
             }
-            var dx = event.clientX - state.initialMousePos.left;
-            var dy = event.clientY - state.initialMousePos.top;
+            var pos = getInitialMousePosition(event);
+            var dx = pos.left - state.initialMousePos.left;
+            var dy = pos.top - state.initialMousePos.top;
             var currentDragPosition = {
                 left: state.startDragPosition.left + dx,
                 top: state.startDragPosition.top + dy
@@ -114,50 +108,42 @@ exports.Draggable = {
             el.style.left = state.currentDragPosition.left + "px";
             el.style.top = state.currentDragPosition.top + "px";
         }
-        function mouseUp(event) {
+        function moveEnd(event) {
             event.preventDefault();
+            document.removeEventListener("mousemove", move);
+            document.removeEventListener("mouseup", moveEnd);
+            document.removeEventListener("touchmove", move);
+            document.removeEventListener("touchend", moveEnd);
             var currentRectPosition = getRectPosition();
             setState({
                 initialMousePos: undefined,
                 startDragPosition: currentRectPosition,
                 currentDragPosition: currentRectPosition
             });
-            document.removeEventListener("mousemove", mouseMove);
-            document.removeEventListener("mouseup", mouseUp);
-            if (binding.value.allowTouch) {
-                document.removeEventListener("touchmove", touchMove);
-                document.removeEventListener("touchend", touchEnd);
-            }
             handlePositionChanged(event, ChangePositionType.End);
         }
-        function touchEnd(event) {
-            event.preventDefault();
-            var touch = event.changedTouches[event.changedTouches.length - 1];
-            if (touch) {
-                mouseUp(new MouseEvent('mouseup', { clientX: touch.clientX, clientY: touch.clientY }));
-            }
-        }
-        function mouseDown(event) {
+        function moveStart(event) {
             setState({ initialMousePos: getInitialMousePosition(event) });
             handlePositionChanged(event, ChangePositionType.Start);
-            document.addEventListener("mousemove", mouseMove);
-            document.addEventListener("mouseup", mouseUp);
-            if (binding.value.allowTouch) {
-                document.addEventListener("touchmove", touchMove);
-                document.addEventListener("touchend", touchEnd);
-            }
-        }
-        function touchStart(event) {
-            var touch = event.changedTouches[event.changedTouches.length - 1];
-            if (touch) {
-                mouseDown(new MouseEvent('mousedown', { clientX: touch.clientX, clientY: touch.clientY }));
-            }
+            document.addEventListener("mousemove", move);
+            document.addEventListener("mouseup", moveEnd);
+            document.addEventListener("touchmove", move);
+            document.addEventListener("touchend", moveEnd);
         }
         function getInitialMousePosition(event) {
-            return event && {
-                left: event.clientX,
-                top: event.clientY
-            };
+            if (event instanceof MouseEvent) {
+                return {
+                    left: event.clientX,
+                    top: event.clientY
+                };
+            }
+            if (event instanceof TouchEvent) {
+                var touch = event.changedTouches[event.changedTouches.length - 1];
+                return {
+                    left: touch.clientX,
+                    top: touch.clientY
+                };
+            }
         }
         function getRectPosition() {
             var clientRect = el.getBoundingClientRect();
@@ -182,34 +168,30 @@ exports.Draggable = {
         }
         function setState(partialState) {
             var prevState = getState();
-            var state = {};
+            var state = __assign(__assign({}, prevState), partialState);
+            handler.setAttribute("draggable-state", JSON.stringify(state));
         }
-    } };
-prevState,
-;
-partialState;
-;
-handler.setAttribute("draggable-state", JSON.stringify(state));
-function handlePositionChanged(event, changePositionType) {
-    var state = getState();
-    var posDiff = { x: 0, y: 0 };
-    if (state.currentDragPosition && state.startDragPosition) {
-        posDiff.x = state.currentDragPosition.left - state.startDragPosition.left;
-        posDiff.y = state.currentDragPosition.top - state.startDragPosition.top;
+        function handlePositionChanged(event, changePositionType) {
+            var state = getState();
+            var posDiff = { x: 0, y: 0 };
+            if (state.currentDragPosition && state.startDragPosition) {
+                posDiff.x = state.currentDragPosition.left - state.startDragPosition.left;
+                posDiff.y = state.currentDragPosition.top - state.startDragPosition.top;
+            }
+            var currentPosition = state.currentDragPosition && __assign({}, state.currentDragPosition);
+            if (changePositionType === ChangePositionType.End) {
+                binding.value && binding.value.onDragEnd && state && binding.value.onDragEnd(posDiff, currentPosition, event);
+            }
+            else if (changePositionType === ChangePositionType.Start) {
+                binding.value && binding.value.onDragStart && state && binding.value.onDragStart(posDiff, currentPosition, event);
+            }
+            else {
+                binding.value && binding.value.onPositionChange && state && binding.value.onPositionChange(posDiff, currentPosition, event);
+            }
+        }
+        function getState() {
+            return JSON.parse(handler.getAttribute("draggable-state")) || {};
+        }
     }
-    var currentPosition = state.currentDragPosition && { state: .currentDragPosition };
-    if (changePositionType === ChangePositionType.End) {
-        binding.value && binding.value.onDragEnd && state && binding.value.onDragEnd(posDiff, currentPosition, event);
-    }
-    else if (changePositionType === ChangePositionType.Start) {
-        binding.value && binding.value.onDragStart && state && binding.value.onDragStart(posDiff, currentPosition, event);
-    }
-    else {
-        binding.value && binding.value.onPositionChange && state && binding.value.onPositionChange(posDiff, currentPosition, event);
-    }
-}
-function getState() {
-    return JSON.parse(handler.getAttribute("draggable-state"), as, string) || {};
-}
-;
+};
 //# sourceMappingURL=draggable.js.map
