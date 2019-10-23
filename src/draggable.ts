@@ -29,7 +29,6 @@ export interface DraggableValue {
 	boundingElement?: HTMLElement;
 	boundingRectMargin?: MarginOptions;
 	initialPosition?: Position;
-	allowTouch?: boolean;
 }
 
 export interface DraggableBindings extends VNodeDirective {
@@ -99,10 +98,8 @@ export const Draggable: DirectiveOptions = {
 		if (!handler.getAttribute("draggable")) {
 			el.removeEventListener("mousedown", (el as any)["listener"]);
 			handler.addEventListener("mousedown", mouseDown);
-			if (binding.value.allowTouch) {
-				el.removeEventListener("touchstart", (el as any)["listener"]);
-				handler.addEventListener("touchstart", touchStart);
-			}
+			el.removeEventListener("touchstart", (el as any)["listener"]);
+			handler.addEventListener("touchstart", touchStart);
 			handler.setAttribute("draggable", "true");
 			(el as any)["listener"] = mouseDown;
 			initializeState();
@@ -190,10 +187,8 @@ export const Draggable: DirectiveOptions = {
 
 			document.removeEventListener("mousemove", mouseMove);
 			document.removeEventListener("mouseup", mouseUp);
-			if (binding.value.allowTouch) {
-				document.removeEventListener("touchmove", touchMove);
-				document.removeEventListener("touchend", touchEnd);
-			}
+			document.removeEventListener("touchmove", touchMove);
+			document.removeEventListener("touchend", touchEnd);
 			handlePositionChanged(event, ChangePositionType.End);
 		}
 
@@ -210,10 +205,8 @@ export const Draggable: DirectiveOptions = {
 			handlePositionChanged(event, ChangePositionType.Start);
 			document.addEventListener("mousemove", mouseMove);
 			document.addEventListener("mouseup", mouseUp);
-			if (binding.value.allowTouch) {
-				document.addEventListener("touchmove", touchMove);
-				document.addEventListener("touchend", touchEnd);
-			}
+			document.addEventListener("touchmove", touchMove);
+			document.addEventListener("touchend", touchEnd);
 		}
 
 		function touchStart(event: TouchEvent) {
