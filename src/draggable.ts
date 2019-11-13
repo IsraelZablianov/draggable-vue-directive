@@ -100,7 +100,7 @@ export const Draggable: DirectiveOptions = {
 			el.removeEventListener("mousedown", (el as any)["listener"]);
 			handler.addEventListener("mousedown", moveStart);
 			el.removeEventListener("touchstart", (el as any)["listener"]);
-			handler.addEventListener("touchstart", moveStart);
+			handler.addEventListener("touchstart", moveStart, { passive: false });
 			handler.setAttribute("draggable", "true");
 			(el as any)["listener"] = moveStart;
 			initializeState();
@@ -164,7 +164,8 @@ export const Draggable: DirectiveOptions = {
 				return;
 			}
 
-			el.style.position = "fixed";
+			el.style.touchAction = 'none'
+			el.style.position = 'fixed';
 			el.style.left = `${state.currentDragPosition.left}px`;
 			el.style.top = `${state.currentDragPosition.top}px`;
 		}
