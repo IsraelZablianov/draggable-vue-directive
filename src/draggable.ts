@@ -164,8 +164,8 @@ export const Draggable: DirectiveOptions = {
 				return;
 			}
 
-			el.style.touchAction = 'none'
-			el.style.position = 'fixed';
+			el.style.touchAction = "none";
+			el.style.position = "fixed";
 			el.style.left = `${state.currentDragPosition.left}px`;
 			el.style.top = `${state.currentDragPosition.top}px`;
 		}

@@ -58,7 +58,7 @@ exports.Draggable = {
             el.removeEventListener("mousedown", el["listener"]);
             handler.addEventListener("mousedown", moveStart);
             el.removeEventListener("touchstart", el["listener"]);
-            handler.addEventListener("touchstart", moveStart);
+            handler.addEventListener("touchstart", moveStart, { passive: false });
             handler.setAttribute("draggable", "true");
             el["listener"] = moveStart;
             initializeState();
@@ -104,6 +104,7 @@ exports.Draggable = {
             if (!state.currentDragPosition) {
                 return;
             }
+            el.style.touchAction = "none";
             el.style.position = "fixed";
             el.style.left = state.currentDragPosition.left + "px";
             el.style.top = state.currentDragPosition.top + "px";
