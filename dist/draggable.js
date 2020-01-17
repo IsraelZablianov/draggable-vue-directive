@@ -1,11 +1,14 @@
 "use strict";
-var __assign = (this && this.__assign) || Object.assign || function(t) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
-        s = arguments[i];
-        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-            t[p] = s[p];
-    }
-    return t;
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var ChangePositionType;
@@ -53,13 +56,15 @@ exports.Draggable = {
         }
         if (!handler.getAttribute("draggable")) {
             el.removeEventListener("mousedown", el["listener"]);
-            handler.addEventListener("mousedown", mouseDown);
+            handler.addEventListener("mousedown", moveStart);
+            el.removeEventListener("touchstart", el["listener"]);
+            handler.addEventListener("touchstart", moveStart, { passive: false });
             handler.setAttribute("draggable", "true");
-            el["listener"] = mouseDown;
+            el["listener"] = moveStart;
             initializeState();
             handlePositionChanged();
         }
-        function mouseMove(event) {
+        function move(event) {
             event.preventDefault();
             var stopDragging = binding.value && binding.value.stopDragging;
             if (stopDragging) {
@@ -70,8 +75,9 @@ exports.Draggable = {
                 initializeState(event);
                 state = getState();
             }
-            var dx = event.clientX - state.initialMousePos.left;
-            var dy = event.clientY - state.initialMousePos.top;
+            var pos = getInitialMousePosition(event);
+            var dx = pos.left - state.initialMousePos.left;
+            var dy = pos.top - state.initialMousePos.top;
             var currentDragPosition = {
                 left: state.startDragPosition.left + dx,
                 top: state.startDragPosition.top + dy
@@ -98,33 +104,47 @@ exports.Draggable = {
             if (!state.currentDragPosition) {
                 return;
             }
+            el.style.touchAction = "none";
             el.style.position = "fixed";
             el.style.left = state.currentDragPosition.left + "px";
             el.style.top = state.currentDragPosition.top + "px";
         }
-        function mouseUp(event) {
+        function moveEnd(event) {
             event.preventDefault();
+            document.removeEventListener("mousemove", move);
+            document.removeEventListener("mouseup", moveEnd);
+            document.removeEventListener("touchmove", move);
+            document.removeEventListener("touchend", moveEnd);
             var currentRectPosition = getRectPosition();
             setState({
                 initialMousePos: undefined,
                 startDragPosition: currentRectPosition,
                 currentDragPosition: currentRectPosition
             });
-            document.removeEventListener("mousemove", mouseMove);
-            document.removeEventListener("mouseup", mouseUp);
             handlePositionChanged(event, ChangePositionType.End);
         }
-        function mouseDown(event) {
+        function moveStart(event) {
             setState({ initialMousePos: getInitialMousePosition(event) });
             handlePositionChanged(event, ChangePositionType.Start);
-            document.addEventListener("mousemove", mouseMove);
-            document.addEventListener("mouseup", mouseUp);
+            document.addEventListener("mousemove", move);
+            document.addEventListener("mouseup", moveEnd);
+            document.addEventListener("touchmove", move);
+            document.addEventListener("touchend", moveEnd);
         }
         function getInitialMousePosition(event) {
-            return event && {
-                left: event.clientX,
-                top: event.clientY
-            };
+            if (event instanceof MouseEvent) {
+                return {
+                    left: event.clientX,
+                    top: event.clientY
+                };
+            }
+            if (event instanceof TouchEvent) {
+                var touch = event.changedTouches[event.changedTouches.length - 1];
+                return {
+                    left: touch.clientX,
+                    top: touch.clientY
+                };
+            }
         }
         function getRectPosition() {
             var clientRect = el.getBoundingClientRect();
@@ -149,7 +169,7 @@ exports.Draggable = {
         }
         function setState(partialState) {
             var prevState = getState();
-            var state = __assign({}, prevState, partialState);
+            var state = __assign(__assign({}, prevState), partialState);
             handler.setAttribute("draggable-state", JSON.stringify(state));
         }
         function handlePositionChanged(event, changePositionType) {
