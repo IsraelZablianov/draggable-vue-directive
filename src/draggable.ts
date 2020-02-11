@@ -203,7 +203,7 @@ export const Draggable: DirectiveOptions = {
 					top: event.clientY
 				}
 			}
-			if (event instanceof TouchEvent) {
+			if (window.TouchEvent && event instanceof TouchEvent) {
 				const touch = event.changedTouches[event.changedTouches.length - 1];
 				return {
 					left: touch.clientX,
